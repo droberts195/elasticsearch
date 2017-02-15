@@ -30,7 +30,7 @@ import java.util.Locale;
 public class SpawnerTests extends ESTestCase {
 
     public void testMakePlatformName() {
-        String platformName = Spawner.makePlatformName(Constants.OS_NAME, Constants.OS_ARCH);
+        String platformName = Spawner.makePlatformName(Constants.OS_NAME, CLibrary.getDefaultCLibrary(), Constants.OS_ARCH);
 
         assertFalse(platformName, platformName.isEmpty());
         assertTrue(platformName, platformName.equals(platformName.toLowerCase(Locale.ROOT)));
@@ -40,13 +40,14 @@ public class SpawnerTests extends ESTestCase {
     }
 
     public void testMakeSpecificPlatformNames() {
-        assertEquals("darwin-x86_64", Spawner.makePlatformName("Mac OS X", "x86_64"));
-        assertEquals("linux-x86_64", Spawner.makePlatformName("Linux", "amd64"));
-        assertEquals("linux-x86", Spawner.makePlatformName("Linux", "i386"));
-        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows Server 2008 R2", "amd64"));
-        assertEquals("windows-x86", Spawner.makePlatformName("Windows Server 2008", "x86"));
-        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows 8.1", "amd64"));
-        assertEquals("sunos-x86_64", Spawner.makePlatformName("SunOS", "amd64"));
+        assertEquals("darwin-x86_64", Spawner.makePlatformName("Mac OS X", "", "x86_64"));
+        assertEquals("linux-x86_64", Spawner.makePlatformName("Linux", "", "amd64"));
+        assertEquals("linux-musl-x86_64", Spawner.makePlatformName("Linux", "musl", "amd64"));
+        assertEquals("linux-x86", Spawner.makePlatformName("Linux", "", "i386"));
+        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows Server 2008 R2", "", "amd64"));
+        assertEquals("windows-x86", Spawner.makePlatformName("Windows Server 2008", "", "x86"));
+        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows 8.1", "", "amd64"));
+        assertEquals("sunos-x86_64", Spawner.makePlatformName("SunOS", "", "amd64"));
     }
 
 }

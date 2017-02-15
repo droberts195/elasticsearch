@@ -39,7 +39,7 @@ import java.util.Locale;
 final class Spawner implements Closeable {
 
     private static final String PROGRAM_NAME = Constants.WINDOWS ? "controller.exe" : "controller";
-    private static final String PLATFORM_NAME = makePlatformName(Constants.OS_NAME, Constants.OS_ARCH);
+    private static final String PLATFORM_NAME = makePlatformName(Constants.OS_NAME, CLibrary.getDefaultCLibrary(), Constants.OS_ARCH);
     private static final String TMP_ENVVAR = "TMPDIR";
 
     /**
@@ -109,8 +109,12 @@ final class Spawner implements Closeable {
      * However, for consistency between different operating systems on the same architecture
      * "amd64" is replaced with "x86_64" and "i386" with "x86".
      * For Windows it's "windows-" followed by either "x86" or "x86_64".
+     * For Linux systems with non-default C libraries there can be a 3rd component, for example:
+     * - linux-musl-x86_64
+     * - linux-uclibc-x86_64
+     * This is necessary because programs built for one C library will not work with a different one.
      */
-    static String makePlatformName(String osName, String osArch) {
+    static String makePlatformName(String osName, String cLibrary, String osArch) {
         String os = osName.toLowerCase(Locale.ROOT);
         if (os.startsWith("windows")) {
             os = "windows";
@@ -123,6 +127,9 @@ final class Spawner implements Closeable {
         } else if (cpu.equals("i386")) {
             cpu = "x86";
         }
-        return os + "-" + cpu;
+        if (cLibrary.isEmpty()) {
+            return os + "-" + cpu;
+        }
+        return os + "-" + cLibrary + "-" + cpu;
     }
 }

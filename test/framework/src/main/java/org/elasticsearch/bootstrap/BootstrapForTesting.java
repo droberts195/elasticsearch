@@ -75,6 +75,9 @@ public class BootstrapForTesting {
             throw new RuntimeException("unable to create test temp directory", e);
         }
 
+        // check for non-default C library before installing SM
+        CLibrary.getDefaultCLibrary();
+
         // just like bootstrap, initialize natives, then SM
         Bootstrap.initializeNatives(javaTmpDir, true, true, true);
 

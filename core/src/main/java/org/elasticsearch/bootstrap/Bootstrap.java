@@ -177,6 +177,9 @@ final class Bootstrap {
             throw new BootstrapException(e);
         }
 
+        // check for non-default C library before the security manager is installed
+        CLibrary.getDefaultCLibrary();
+
         initializeNatives(
                 environment.tmpFile(),
                 BootstrapSettings.MEMORY_LOCK_SETTING.get(settings),
