@@ -30,7 +30,7 @@ import java.util.Locale;
 public class SpawnerTests extends ESTestCase {
 
     public void testMakePlatformName() {
-        String platformName = Spawner.makePlatformName(Constants.OS_NAME, Constants.OS_ARCH);
+        String platformName = Spawner.makePlatformName(Constants.OS_NAME, System.getProperty("java.runtime.version"), Constants.OS_ARCH);
 
         assertFalse(platformName, platformName.isEmpty());
         assertTrue(platformName, platformName.equals(platformName.toLowerCase(Locale.ROOT)));
@@ -40,13 +40,13 @@ public class SpawnerTests extends ESTestCase {
     }
 
     public void testMakeSpecificPlatformNames() {
-        assertEquals("darwin-x86_64", Spawner.makePlatformName("Mac OS X", "x86_64"));
-        assertEquals("linux-x86_64", Spawner.makePlatformName("Linux", "amd64"));
-        assertEquals("linux-x86", Spawner.makePlatformName("Linux", "i386"));
-        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows Server 2008 R2", "amd64"));
-        assertEquals("windows-x86", Spawner.makePlatformName("Windows Server 2008", "x86"));
-        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows 8.1", "amd64"));
-        assertEquals("sunos-x86_64", Spawner.makePlatformName("SunOS", "amd64"));
+        assertEquals("darwin-x86_64", Spawner.makePlatformName("Mac OS X", "1.8.0_121-b13", "x86_64"));
+        assertEquals("linux-x86_64", Spawner.makePlatformName("Linux", "1.8.0_121-b13", "amd64"));
+        assertEquals("linux-musl-x86_64", Spawner.makePlatformName("Linux", "1.8.0_92-internal-alpine-r1-b14", "amd64"));
+        assertEquals("linux-x86", Spawner.makePlatformName("Linux", "1.8.0_121-b13", "i386"));
+        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows Server 2008 R2", "1.8.0_121-b13", "amd64"));
+        assertEquals("windows-x86", Spawner.makePlatformName("Windows Server 2008", "1.8.0_121-b13", "x86"));
+        assertEquals("windows-x86_64", Spawner.makePlatformName("Windows 8.1", "1.8.0_121-b13", "amd64"));
+        assertEquals("sunos-x86_64", Spawner.makePlatformName("SunOS", "1.8.0_121-b13", "amd64"));
     }
-
 }

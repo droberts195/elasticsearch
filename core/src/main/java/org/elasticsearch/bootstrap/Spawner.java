@@ -39,7 +39,8 @@ import java.util.Locale;
 final class Spawner implements Closeable {
 
     private static final String PROGRAM_NAME = Constants.WINDOWS ? "controller.exe" : "controller";
-    private static final String PLATFORM_NAME = makePlatformName(Constants.OS_NAME, Constants.OS_ARCH);
+    private static final String PLATFORM_NAME =
+            makePlatformName(Constants.OS_NAME, System.getProperty("java.runtime.version"), Constants.OS_ARCH);
     private static final String TMP_ENVVAR = "TMPDIR";
 
     /**
@@ -109,13 +110,17 @@ final class Spawner implements Closeable {
      * However, for consistency between different operating systems on the same architecture
      * "amd64" is replaced with "x86_64" and "i386" with "x86".
      * For Windows it's "windows-" followed by either "x86" or "x86_64".
+     * If the JVM was built for Alpine Linux, we assume the default C library is musl (and in
+     * future more Linux distributions could potentially be added to this test).
      */
-    static String makePlatformName(String osName, String osArch) {
+    static String makePlatformName(String osName, String runtimeVersion, String osArch) {
         String os = osName.toLowerCase(Locale.ROOT);
         if (os.startsWith("windows")) {
             os = "windows";
         } else if (os.equals("mac os x")) {
             os = "darwin";
+        } else if (runtimeVersion != null && runtimeVersion.contains("-alpine-") && os.equals("linux")) {
+            os = "linux-musl";
         }
         String cpu = osArch.toLowerCase(Locale.ROOT);
         if (cpu.equals("amd64")) {
