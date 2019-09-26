@@ -19,6 +19,8 @@
 
 package org.elasticsearch.action.admin.indices.settings.get;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.master.TransportMasterNodeReadAction;
@@ -42,9 +44,12 @@ import org.elasticsearch.threadpool.ThreadPool;
 import org.elasticsearch.transport.TransportService;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 public class TransportGetSettingsAction extends TransportMasterNodeReadAction<GetSettingsRequest, GetSettingsResponse> {
+
+    private static final Logger logger = LogManager.getLogger(TransportGetSettingsAction.class);
 
     private final SettingsFilter settingsFilter;
     private final IndexScopedSettings indexScopedSettings;
@@ -68,6 +73,7 @@ public class TransportGetSettingsAction extends TransportMasterNodeReadAction<Ge
 
     @Override
     protected ClusterBlockException checkBlock(GetSettingsRequest request, ClusterState state) {
+        logger.info("checking block for request with indices " + Arrays.asList(request.indices()));
         return state.blocks().indicesBlockedException(ClusterBlockLevel.METADATA_READ,
             indexNameExpressionResolver.concreteIndexNames(state, request));
     }

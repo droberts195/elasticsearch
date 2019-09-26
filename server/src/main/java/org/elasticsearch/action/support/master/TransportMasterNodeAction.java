@@ -26,6 +26,7 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.ActionListenerResponseHandler;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.ActionRunnable;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
 import org.elasticsearch.action.support.ActionFilters;
 import org.elasticsearch.action.support.HandledTransportAction;
 import org.elasticsearch.cluster.ClusterState;
@@ -50,6 +51,7 @@ import org.elasticsearch.transport.TransportException;
 import org.elasticsearch.transport.TransportService;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 /**
@@ -191,6 +193,10 @@ public abstract class TransportMasterNodeAction<Request extends MasterNodeReques
                                     }
                                 }
                         });
+                        if (request instanceof GetSettingsRequest) {
+                            logger.warn("forwarded GetSettingsRequest containing indices "
+                                + Arrays.asList(((GetSettingsRequest) request).indices()) + " to master node [{}]", masterNode);
+                        }
                     }
                 }
             } catch (Exception e) {

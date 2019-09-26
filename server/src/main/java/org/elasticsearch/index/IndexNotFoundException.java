@@ -18,6 +18,7 @@
  */
 package org.elasticsearch.index;
 
+import org.apache.logging.log4j.LogManager;
 import org.elasticsearch.ResourceNotFoundException;
 import org.elasticsearch.common.io.stream.StreamInput;
 
@@ -39,6 +40,7 @@ public final class IndexNotFoundException extends ResourceNotFoundException {
     public IndexNotFoundException(String index, Throwable cause) {
         super("no such index [" + index + "]", cause);
         setIndex(index);
+        LogManager.getLogger(IndexNotFoundException.class).error("IndexNotFoundException created", this);
     }
 
     public IndexNotFoundException(Index index) {
